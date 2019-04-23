@@ -12,7 +12,7 @@ var startCmd = &cobra.Command{
 	Short: "Start the server",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		server.StartFTPServer()
+		server.StartFTPServer(cfgFile, dataDir)
 	},
 }
 

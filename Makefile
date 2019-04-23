@@ -1,4 +1,6 @@
 PACKAGE  = ftp-ingest
+REGISTRY = quay.io
+REGISTRY_USER = destack
 DATE    ?= $(shell date +%FT%T%z)
 VERSION ?= $(shell git describe --tags --always --dirty --match=v* 2> /dev/null || \
 			cat $(CURDIR)/.version 2> /dev/null || echo v0)
@@ -23,8 +25,17 @@ all: fmt lint $(BIN) ; $(info $(M) building executable…) @ ## Build program bi
 
 .PHONY: start
 start: all
-	$(BIN)/$(PACKAGE) start
+	$(BIN)/$(PACKAGE) start $(@echo $(filter-out $@,$(MAKECMDGOALS)))
 
+.PHONY: build-container
+build-container: all
+	docker build -t $(REGISTRY)/$(REGISTRY_USER)/$(PACKAGE):$(VERSION) .
+
+.PHONY: release-container
+release-container: build-container
+	docker tag $(REGISTRY)/$(REGISTRY_USER)/$(PACKAGE):$(VERSION) $(REGISTRY)/$(REGISTRY_USER)/$(PACKAGE):latest
+	docker push $(REGISTRY)/$(REGISTRY_USER)/$(PACKAGE):$(VERSION)
+	docker push $(REGISTRY)/$(REGISTRY_USER)/$(PACKAGE):latest
 # Tools
 
 $(BIN):

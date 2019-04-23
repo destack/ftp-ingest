@@ -10,6 +10,7 @@ import (
 )
 
 var cfgFile string
+var dataDir string
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -35,7 +36,8 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.ftp-ingest.yml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.settings.toml)")
+	RootCmd.PersistentFlags().StringVar(&dataDir, "data", "", "config file (default is /$HOME/data")
 }
 
 // initConfig reads in config file and ENV variables if set.
